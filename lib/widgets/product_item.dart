@@ -29,12 +29,10 @@ class ProductItem extends StatelessWidget {
           ),
         ),
         footer: GridTileBar(
-            title: FittedBox(
-              child: Text(
-                product.title,
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 14),
-              ),
+            title: Text(
+              product.title,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 14),
             ),
             backgroundColor: Colors.black87,
             leading: IconButton(
