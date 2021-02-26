@@ -64,19 +64,19 @@ class Products with ChangeNotifier {
     return _items.where((element) => element.isFavorite).toList();
   }
 
-  Future<void> addItem(Product product) {
+  Future<void> addItem(Product product) async {
     const baseUrl =
-        'https://flutter-ecommerce-1-2d485-default-rtdb.firebaseio.com/products.json';
-    return http
-        .post(baseUrl,
-            body: json.encode({
-              'title': product.title,
-              'description': product.description,
-              'price': product.price,
-              'imageUrl': product.imageUrl,
-              'isFavorite': product.isFavorite,
-            }))
-        .then((response) {
+        'https://flutter-ecommerce-1-2d485-default-rtdb.firebaseio.com/products';
+    try {
+      final response = await http.post(baseUrl,
+          body: json.encode({
+            'title': product.title,
+            'description': product.description,
+            'price': product.price,
+            'imageUrl': product.imageUrl,
+            'isFavorite': product.isFavorite,
+          }));
+
       final newProduct = Product(
           id: json.decode(response.body)['name'],
           title: product.title,
@@ -86,7 +86,10 @@ class Products with ChangeNotifier {
       _items.add(newProduct);
 
       notifyListeners();
-    });
+    } catch (error) {
+      print(error);
+      //throw error;
+    }
   }
 
   Product getProductById(String id) {
