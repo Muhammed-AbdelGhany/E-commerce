@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:e_commerce/providers/product.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -66,7 +65,7 @@ class Products with ChangeNotifier {
 
   Future<void> addItem(Product product) async {
     const baseUrl =
-        'https://flutter-ecommerce-1-2d485-default-rtdb.firebaseio.com/products';
+        'https://flutter-ecommerce-1-2d485-default-rtdb.firebaseio.com/products.json';
     try {
       final response = await http.post(baseUrl,
           body: json.encode({
@@ -88,7 +87,7 @@ class Products with ChangeNotifier {
       notifyListeners();
     } catch (error) {
       print(error);
-      //throw error;
+      throw error;
     }
   }
 
