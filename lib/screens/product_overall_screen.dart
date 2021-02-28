@@ -1,4 +1,5 @@
 import 'package:e_commerce/providers/cart.dart';
+import 'package:e_commerce/providers/products.dart';
 import 'package:e_commerce/screens/cart_screen.dart';
 import 'package:e_commerce/widgets/app_drawer.dart';
 import 'package:e_commerce/widgets/badge.dart';
@@ -18,6 +19,21 @@ class ProductOverallScreen extends StatefulWidget {
 
 class _ProductOverallScreenState extends State<ProductOverallScreen> {
   bool isFavoriteSelected = false;
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    setState(() {
+      isLoading = true;
+    });
+    Provider.of<Products>(context, listen: false).fetchData().then((_) {
+      setState(() {
+        isLoading = false;
+      });
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +77,9 @@ class _ProductOverallScreenState extends State<ProductOverallScreen> {
         ],
       ),
       drawer: AppDrawer(),
-      body: ProductsGrid(isFavoriteSelected),
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : ProductsGrid(isFavoriteSelected),
     );
   }
 }
