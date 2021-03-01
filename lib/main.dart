@@ -9,6 +9,7 @@ import 'package:e_commerce/screens/product_overall_screen.dart';
 import 'package:e_commerce/screens/user_products_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+//main screen
 
 void main() {
   runApp(MyApp());
