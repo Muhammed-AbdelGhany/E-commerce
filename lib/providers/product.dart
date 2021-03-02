@@ -1,4 +1,8 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
 
 class Product with ChangeNotifier {
   final String id;
@@ -16,8 +20,26 @@ class Product with ChangeNotifier {
       @required this.imageUrl,
       this.isFavorite = false});
 
-  void toggleFavorite() {
+  Future<void> toggleFavorite() async {
+    var oldval = isFavorite;
     isFavorite = !isFavorite;
     notifyListeners();
+    final baseUrl =
+        'https://flutter-ecommerce-1-2d485-default-rtdb.firebaseio.com/products/$id';
+    try {
+      final response = await http.patch(baseUrl,
+          body: json.encode({'isFavorite': isFavorite}));
+      if (response.statusCode == 200 || response.statusCode == 201) {
+      } else {
+        isFavorite = oldval;
+        notifyListeners();
+        throw HttpException('Network error');
+      }
+    } catch (_) {
+      isFavorite = oldval;
+      notifyListeners();
+
+      throw HttpException('Network Error');
+    }
   }
 }

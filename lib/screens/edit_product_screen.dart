@@ -56,13 +56,13 @@ class _EditProductScreenState extends State<EditProductScreen> {
   }
 
   Future<void> _saveProduct() async {
-    setState(() {
-      isLoading = true;
-    });
     var _isvalid = _form.currentState.validate();
     if (!_isvalid) {
       return;
     }
+    setState(() {
+      isLoading = true;
+    });
     _form.currentState.save();
     if (_editedProduct.id != null) {
       await Provider.of<Products>(context, listen: false)

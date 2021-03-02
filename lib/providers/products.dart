@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:e_commerce/models/http_exception.dart';
 import 'package:e_commerce/providers/product.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -133,8 +134,15 @@ class Products with ChangeNotifier {
     notifyListeners();
   }
 
-  void deleteProduct(String id) {
-    _items.removeWhere((element) => element.id == id);
-    notifyListeners();
+  Future<void> deleteProduct(String id) async {
+    final baseUrl =
+        'https://flutter-ecommerce-1-2d485-default-rtdb.firebaseio.com/products/$id.json';
+    final response = await http.delete(baseUrl);
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      _items.removeWhere((element) => element.id == id);
+      notifyListeners();
+    } else {
+      throw HttpException('Cant delete item.');
+    }
   }
 }
