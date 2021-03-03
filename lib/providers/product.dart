@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:e_commerce/models/http_exception.dart';
 
 class Product with ChangeNotifier {
   final String id;
@@ -25,21 +26,14 @@ class Product with ChangeNotifier {
     isFavorite = !isFavorite;
     notifyListeners();
     final baseUrl =
-        'https://flutter-ecommerce-1-2d485-default-rtdb.firebaseio.com/products/$id';
-    try {
-      final response = await http.patch(baseUrl,
-          body: json.encode({'isFavorite': isFavorite}));
-      if (response.statusCode == 200 || response.statusCode == 201) {
-      } else {
-        isFavorite = oldval;
-        notifyListeners();
-        throw HttpException('Network error');
-      }
-    } catch (_) {
+        'https://flutter-ecommerce-1-2d485-default-rtdb.firebaseio.com/products/$id.json';
+
+    final response = await http.patch(baseUrl,
+        body: json.encode({'isFavorite': isFavorite}));
+    if (response.statusCode >= 400) {
       isFavorite = oldval;
       notifyListeners();
-
-      throw HttpException('Network Error');
+      throw HttpException('Network error');
     }
   }
 }

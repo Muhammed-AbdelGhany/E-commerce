@@ -42,7 +42,7 @@ class ProductItem extends StatelessWidget {
                   : Icon(Icons.favorite_border_outlined),
               onPressed: () async {
                 try {
-                  product.toggleFavorite();
+                  await product.toggleFavorite();
                 } catch (error) {
                   scaffold.showSnackBar(
                     SnackBar(
