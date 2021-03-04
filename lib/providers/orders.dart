@@ -30,6 +30,9 @@ class Orders with ChangeNotifier {
     try {
       final response = await http.get(baseUrl);
       final loadedData = json.decode(response.body) as Map<String, dynamic>;
+      if (loadedData == null) {
+        return;
+      }
       final List<OrderItem> recentOrders = [];
       loadedData.forEach((orderId, orderData) {
         recentOrders.add(OrderItem(
