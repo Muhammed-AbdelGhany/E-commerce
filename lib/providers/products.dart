@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class Products with ChangeNotifier {
+  final token;
+
   List<Product> _items = [
     // Product(
     //   id: 'p1',
@@ -55,7 +57,7 @@ class Products with ChangeNotifier {
     //       'https://cdn.shopify.com/s/files/1/0250/9661/8038/products/vital-c-intense-moisturizer-with-box_600x.jpg?v=1585843221',
     // ),
   ];
-
+  Products(this.token, this._items);
   List<Product> get items {
     return [..._items];
   }
@@ -65,8 +67,8 @@ class Products with ChangeNotifier {
   }
 
   Future<void> fetchData() async {
-    const baseUrl =
-        'https://flutter-ecommerce-1-2d485-default-rtdb.firebaseio.com/products.json';
+    final baseUrl =
+        'https://flutter-ecommerce-1-2d485-default-rtdb.firebaseio.com/products.json?auth=$token';
     try {
       final response = await http.get(baseUrl);
       final loadedData = json.decode(response.body) as Map<String, dynamic>;
@@ -91,8 +93,8 @@ class Products with ChangeNotifier {
   }
 
   Future<void> addItem(Product product) async {
-    const baseUrl =
-        'https://flutter-ecommerce-1-2d485-default-rtdb.firebaseio.com/products.json';
+    final baseUrl =
+        'https://flutter-ecommerce-1-2d485-default-rtdb.firebaseio.com/products.json?auth=$token';
     try {
       final response = await http.post(baseUrl,
           body: json.encode({
@@ -124,7 +126,7 @@ class Products with ChangeNotifier {
 
   Future<void> updateProduct(String id, Product editedProduct) async {
     final baseUrl =
-        'https://flutter-ecommerce-1-2d485-default-rtdb.firebaseio.com/products/$id.json';
+        'https://flutter-ecommerce-1-2d485-default-rtdb.firebaseio.com/products/$id.json?auth=$token';
     await http.patch(baseUrl,
         body: json.encode({
           'title': editedProduct.title,
@@ -139,7 +141,7 @@ class Products with ChangeNotifier {
 
   Future<void> deleteProduct(String id) async {
     final baseUrl =
-        'https://flutter-ecommerce-1-2d485-default-rtdb.firebaseio.com/products/$id.json';
+        'https://flutter-ecommerce-1-2d485-default-rtdb.firebaseio.com/products/$id.json?auth=$token';
     final response = await http.delete(baseUrl);
     if (response.statusCode == 200 || response.statusCode == 201) {
       _items.removeWhere((element) => element.id == id);
