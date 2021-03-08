@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 
 class Products with ChangeNotifier {
   final token;
+  final userId;
 
   List<Product> _items = [
     // Product(
@@ -57,7 +58,8 @@ class Products with ChangeNotifier {
     //       'https://cdn.shopify.com/s/files/1/0250/9661/8038/products/vital-c-intense-moisturizer-with-box_600x.jpg?v=1585843221',
     // ),
   ];
-  Products(this.token, this._items);
+  Products(this.token, this.userId, this._items);
+
   List<Product> get items {
     return [..._items];
   }
@@ -67,7 +69,7 @@ class Products with ChangeNotifier {
   }
 
   Future<void> fetchData() async {
-    final baseUrl =
+    var baseUrl =
         'https://flutter-ecommerce-1-2d485-default-rtdb.firebaseio.com/products.json?auth=$token';
     try {
       final response = await http.get(baseUrl);
@@ -75,15 +77,20 @@ class Products with ChangeNotifier {
       if (loadedData == null) {
         return;
       }
+      baseUrl =
+          'https://flutter-ecommerce-1-2d485-default-rtdb.firebaseio.com/userFavorits/$userId.json?auth=$token';
+      final favRespone = await http.get(baseUrl);
+      final loadedFav = json.decode(favRespone.body);
+
       final List<Product> loadedProducts = [];
-      loadedData.forEach((productId, product) {
+      loadedData.forEach((productId, productData) {
         loadedProducts.add(Product(
             id: productId,
-            title: product['title'],
-            description: product['description'],
-            price: product['price'],
-            imageUrl: product['imageUrl'],
-            isFavorite: product['isFavorite']));
+            title: productData['title'],
+            description: productData['description'],
+            price: productData['price'],
+            imageUrl: productData['imageUrl'],
+            isFavorite: loadedFav == null ? false : loadedFav[productId]));
       });
       _items = loadedProducts;
       notifyListeners();
@@ -102,7 +109,6 @@ class Products with ChangeNotifier {
             'description': product.description,
             'price': product.price,
             'imageUrl': product.imageUrl,
-            'isFavorite': product.isFavorite,
           }));
 
       final newProduct = Product(

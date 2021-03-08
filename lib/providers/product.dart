@@ -21,15 +21,17 @@ class Product with ChangeNotifier {
       @required this.imageUrl,
       this.isFavorite = false});
 
-  Future<void> toggleFavorite(String token) async {
+  Future<void> toggleFavorite(String token, String userId) async {
     var oldval = isFavorite;
     isFavorite = !isFavorite;
     notifyListeners();
     final baseUrl =
-        'https://flutter-ecommerce-1-2d485-default-rtdb.firebaseio.com/products/$id.json?auth=$token';
+        'https://flutter-ecommerce-1-2d485-default-rtdb.firebaseio.com/userFavorits/$userId/$id.json?auth=$token';
 
-    final response = await http.patch(baseUrl,
-        body: json.encode({'isFavorite': isFavorite}));
+    final response = await http.put(
+      baseUrl,
+      body: json.encode(isFavorite),
+    );
     if (response.statusCode >= 400) {
       isFavorite = oldval;
       notifyListeners();
