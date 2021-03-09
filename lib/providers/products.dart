@@ -68,9 +68,11 @@ class Products with ChangeNotifier {
     return _items.where((element) => element.isFavorite).toList();
   }
 
-  Future<void> fetchData() async {
+  Future<void> fetchData([bool filterByUser = false]) async {
+    final filterQuery =
+        filterByUser ? '&orderBy="creatorId"&equalTo="$userId"' : '';
     var baseUrl =
-        'https://flutter-ecommerce-1-2d485-default-rtdb.firebaseio.com/products.json?auth=$token';
+        'https://flutter-ecommerce-1-2d485-default-rtdb.firebaseio.com/products.json?auth=$token$filterQuery';
     try {
       final response = await http.get(baseUrl);
       final loadedData = json.decode(response.body) as Map<String, dynamic>;
@@ -90,7 +92,8 @@ class Products with ChangeNotifier {
             description: productData['description'],
             price: productData['price'],
             imageUrl: productData['imageUrl'],
-            isFavorite: loadedFav == null ? false : loadedFav[productId]));
+            isFavorite:
+                loadedFav == null ? false : loadedFav[productId] ?? false));
       });
       _items = loadedProducts;
       notifyListeners();
@@ -109,6 +112,7 @@ class Products with ChangeNotifier {
             'description': product.description,
             'price': product.price,
             'imageUrl': product.imageUrl,
+            'creatorId': userId,
           }));
 
       final newProduct = Product(
