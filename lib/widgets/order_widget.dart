@@ -18,26 +18,35 @@ class _OrderWidgetState extends State<OrderWidget> {
   var _expanded = false;
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.all(10),
-      child: Column(
-        children: [
-          ListTile(
-            title: Text('\$${widget.orders.amount}'),
-            subtitle:
-                Text(DateFormat('dd MM yyyy').format(widget.orders.dateTime)),
-            trailing: IconButton(
-              icon: Icon(_expanded ? Icons.expand_less : Icons.expand_more),
-              onPressed: () {
-                setState(() {
-                  _expanded = !_expanded;
-                });
-              },
+    return AnimatedContainer(
+      duration: Duration(milliseconds: 500),
+      curve: Curves.easeInOut,
+      height: _expanded
+          ? min(widget.orders.products.length * 20.00 + 300, 200)
+          : 100,
+      child: Card(
+        margin: EdgeInsets.all(10),
+        child: Column(
+          children: [
+            ListTile(
+              title: Text('\$${widget.orders.amount}'),
+              subtitle:
+                  Text(DateFormat('dd MM yyyy').format(widget.orders.dateTime)),
+              trailing: IconButton(
+                icon: Icon(_expanded ? Icons.expand_less : Icons.expand_more),
+                onPressed: () {
+                  setState(() {
+                    _expanded = !_expanded;
+                  });
+                },
+              ),
             ),
-          ),
-          if (_expanded)
-            Container(
-              height: min(widget.orders.products.length * 20.00 + 50, 180),
+            AnimatedContainer(
+              duration: Duration(milliseconds: 500),
+              curve: Curves.easeInOut,
+              height: _expanded
+                  ? min(widget.orders.products.length * 20.00 + 200, 100)
+                  : 0,
               padding: EdgeInsets.all(10),
               child: ListView(
                 padding: EdgeInsets.symmetric(vertical: 10),
@@ -63,7 +72,8 @@ class _OrderWidgetState extends State<OrderWidget> {
                 ],
               ),
             ),
-        ],
+          ],
+        ),
       ),
     );
   }
