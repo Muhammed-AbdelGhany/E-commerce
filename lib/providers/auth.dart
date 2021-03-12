@@ -107,6 +107,7 @@ class Auth with ChangeNotifier {
         'expiryDate': expiryDate.toIso8601String()
       });
       prefs.setString('userData', userData);
+      print(prefs.getString('userData'));
       notifyListeners();
       print(_token);
     } catch (error) {
@@ -118,17 +119,23 @@ class Auth with ChangeNotifier {
   Future<bool> tryAutoLogin() async {
     final prefs = await SharedPreferences.getInstance();
     if (!prefs.containsKey('userData')) {
+      print('no key');
       return false;
     }
     final extractedData =
         json.decode(prefs.getString('userData')) as Map<String, Object>;
+
     final expirytime = DateTime.parse(extractedData['expiryDate']);
+
     if (expirytime.isBefore(DateTime.now())) {
       return false;
     }
+
     _token = extractedData['token'];
+
     _userid = extractedData['userId'];
-    expiryDate = extractedData['expiryDate'];
+    expiryDate = expirytime;
+
     notifyListeners();
     return true;
   }
@@ -138,7 +145,7 @@ class Auth with ChangeNotifier {
     _userid = null;
     expiryDate = null;
     final prefs = await SharedPreferences.getInstance();
-    prefs.clear();
+    prefs.remove('userData');
     notifyListeners();
   }
 }
