@@ -6,6 +6,8 @@ import 'package:e_commerce/widgets/badge.dart';
 import 'package:e_commerce/widgets/products_grid.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 
 enum FilterOptions {
   Favorits,
@@ -78,7 +80,36 @@ class _ProductOverallScreenState extends State<ProductOverallScreen> {
       ),
       drawer: AppDrawer(),
       body: isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  SizedBox(width: 20.0, height: 100.0),
+                  SpinKitDualRing(color: Theme.of(context).primaryColor),
+                  SizedBox(width: 20.0, height: 100.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "LOADING",
+                        style: TextStyle(fontSize: 40),
+                      ),
+                      SizedBox(width: 20.0, height: 100.0),
+                      RotateAnimatedTextKit(
+                          duration: Duration(milliseconds: 200),
+                          text: [".", "..", "..."],
+                          textStyle:
+                              TextStyle(fontSize: 40.0, fontFamily: "Horizon"),
+                          textAlign: TextAlign.start),
+                    ],
+                  )
+                ],
+              ),
+            )
+          //   child: SpinKitDualRing(
+          //   color: Theme.of(context).primaryColor,
+          //   size: 50.0,
+          // ))
           : ProductsGrid(isFavoriteSelected),
     );
   }

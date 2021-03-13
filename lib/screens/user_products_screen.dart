@@ -4,6 +4,7 @@ import 'package:e_commerce/widgets/app_drawer.dart';
 import 'package:e_commerce/widgets/user_products_item.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class UserProductScreen extends StatelessWidget {
   static const routeName = '/user-products-screen';
@@ -26,7 +27,10 @@ class UserProductScreen extends StatelessWidget {
         future: Provider.of<Products>(context, listen: false).fetchData(true),
         builder: (ctx, snap) => snap.connectionState == ConnectionState.waiting
             ? Center(
-                child: CircularProgressIndicator(),
+                child: SpinKitDualRing(
+                  color: Theme.of(context).primaryColor,
+                  size: 50.0,
+                ),
               )
             : RefreshIndicator(
                 onRefresh: () async =>
